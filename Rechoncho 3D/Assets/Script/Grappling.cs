@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-public class Spring
+public class Grappling : MonoBehaviour
 {
     private float strength;
     private float damper;
@@ -8,12 +10,12 @@ public class Spring
     private float velocity;
     private float value;
 
-    public void Update(float deltaTime)
+    public void Update()
     {
         var direction = target - value >= 0 ? 1f : -1f;
         var force = Mathf.Abs(target - value) * strength;
-        velocity += (force * direction - velocity * damper) * deltaTime;
-        value += velocity * deltaTime;
+        velocity += (force * direction - velocity * damper) * Time.deltaTime;
+        value += velocity * Time.deltaTime;
     }
 
     public void Reset()

@@ -10,6 +10,8 @@ public class AllowActions : MonoBehaviour
     public static bool grounded;
     public float maxSlopeAngle = 35f;
     private bool cancellingGrounded;
+    public static bool equippedJetpack = false;
+    public static int jetpackFuel = 100;
 
     private void FixedUpdate()
     {
@@ -42,6 +44,7 @@ public class AllowActions : MonoBehaviour
                 grounded = true;
                 cancellingGrounded = false;
                 CancelInvoke(nameof(StopGrounded));
+                jetpackFuel = 100;
             }
         }
 
@@ -66,6 +69,15 @@ public class AllowActions : MonoBehaviour
     {
         anim.SetBool("grounded", false);
         grounded = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Jetpack"))
+        {
+            equippedJetpack = true;
+            Destroy(other.gameObject);
+        }
     }
 
 }

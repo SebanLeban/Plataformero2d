@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Mapa
   - Proyectil
+  - Jetpack
   layers:
   - Default
   - TransparentFX

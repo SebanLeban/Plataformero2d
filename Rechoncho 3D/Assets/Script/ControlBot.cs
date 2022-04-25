@@ -2,32 +2,23 @@
 
 public class ControlBot : MonoBehaviour
 {
-    private int hp;
-    public GameObject Player;
+    public Rigidbody player;
 
-    void Start()
-    {
-        hp = 100;
-    }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+
+        if (other.gameObject.CompareTag("Player"))
         {
-            recibirdaño();
+            player.velocity = Vector3.zero;
+            player.angularVelocity = Vector3.zero;
+            player.AddForce(player.transform.up * 5, ForceMode.Impulse);
+            Desaparecer();
         }
     }
-    public void recibirdaño()
-    {
-        hp = hp - 100;
 
-        if (hp <= 0)
-        {
-            desaparecer();
-        }
-    }
-    private void desaparecer()
+    private void Desaparecer()
     {
-        Destroy(gameObject, 3);
+        Destroy(gameObject);
     }
 }

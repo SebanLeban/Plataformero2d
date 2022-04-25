@@ -13,6 +13,7 @@ public class ControlJugador : MonoBehaviour
     public Vector3 mov;
     public Animator anim;
 
+    //Movement
     public static bool hasGroundpounded = false;
     public float MinFuerzaSalto;
     public static float FuerzaDeSalto;
@@ -23,12 +24,14 @@ public class ControlJugador : MonoBehaviour
     public Rigidbody rb;
     public PhysicMaterial pm;
 
-    Vector3 jump;
+    //Powerups
+    public GameObject jetpack;
+    public int jetpackForce;
 
 
     void Start()
     {
-
+        jetpack.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         gameObject.GetComponent<Rigidbody>();
         anim.GetComponent<Animator>();
@@ -36,7 +39,10 @@ public class ControlJugador : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(FuerzaDeSalto);
+        if (AllowActions.equippedJetpack)
+        {
+            jetpack.SetActive(true);
+        }
         //Rotate Left
         if (Input.GetKey(KeyCode.Q))
         {
@@ -65,23 +71,36 @@ public class ControlJugador : MonoBehaviour
             anim.SetBool("chargingBounce", true);
             FuerzaDeSalto += Time.deltaTime * aceleracionFuerzaSalto;
         }
+        else
+        {
+            anim.SetBool("chargingBounce", false);
+        }
 
-        if ((Input.GetKeyUp(KeyCode.Space) || FuerzaDeSalto >= maxfuerzasalto) && AllowActions.grounded == true)
+        if ((Input.GetKeyUp(KeyCode.Space) || FuerzaDeSalto >= maxfuerzasalto) && AllowActions.grounded)
         {
             StartCoroutine(Bounce());
         }
 
+        //Jetpack
+        if (Input.GetKey(KeyCode.Space) && !AllowActions.grounded && AllowActions.equippedJetpack && AllowActions.jetpackFuel >= 0)
+        {
+            rb.AddForce(rb.transform.up * jetpackForce, ForceMode.Impulse);
+            AllowActions.jetpackFuel--;
+        }
+
+
+
         //GroundPound
 
-        float Rotation;
-        if (GameObject.eulerAngles.y <= 180f)
-        {
-            Rotation = GameObject.eulerAngles.y;
-        }
-        else
-        {
-            Rotation = GameObject.eulerAngles.y - 360f;
-        }
+        //float Rotation;
+        //if (GameObject.eulerAngles.y <= 180f)
+        //{
+        //    Rotation = GameObject.eulerAngles.y;
+        //}
+        //else
+        //{
+        //    Rotation = GameObject.eulerAngles.y - 360f;
+        //}
 
         //Debug.Log(Rotation);
 
@@ -108,7 +127,6 @@ public class ControlJugador : MonoBehaviour
             yield return new WaitForSeconds(.05f);
             anim.SetBool("chargingBounce", false);
             rb.AddForce(rb.transform.up * FuerzaDeSalto, ForceMode.Impulse);
-            Debug.Log(jump);
             FuerzaDeSalto = 0f;
         }
 
