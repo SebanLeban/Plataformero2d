@@ -7,6 +7,9 @@ TagManager:
   - Mapa
   - Proyectil
   - Jetpack
+  - Breakable
+  - Bomb
+  - Can
   layers:
   - Default
   - TransparentFX

@@ -10,12 +10,17 @@ public class AllowActions : MonoBehaviour
     public static bool grounded;
     public float maxSlopeAngle = 35f;
     private bool cancellingGrounded;
+
+
     public static bool equippedJetpack = false;
-    public static int jetpackFuel = 100;
+    public static int jetpackFuel = 10;
+
+    public static bool hasGroundpounded = false;
+    public static bool equippedCan = false;
 
     private void FixedUpdate()
     {
-        if (ControlJugador.hasGroundpounded && grounded)
+        if (hasGroundpounded && grounded)
         {
             StartCoroutine("GroundPoundBounce");
             ControlJugador.FuerzaDeSalto = ControlJugador.maxfuerzasalto - 1;
@@ -59,7 +64,7 @@ public class AllowActions : MonoBehaviour
 
     IEnumerator GroundPoundBounce()
     {
-        ControlJugador.hasGroundpounded = false;
+        hasGroundpounded = false;
         ControlJugador.FuerzaDeSalto = ControlJugador.maxfuerzasalto - 1;
         yield return new WaitForSeconds(0.2f);
         ControlJugador.FuerzaDeSalto = 0;
@@ -75,10 +80,24 @@ public class AllowActions : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Jetpack"))
         {
+            UnequipAll();
             equippedJetpack = true;
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.CompareTag("Can"))
+        {
+            UnequipAll();
+            equippedCan = true;
             Destroy(other.gameObject);
         }
     }
 
+
+    private void UnequipAll()
+    {
+        equippedJetpack = false;
+        equippedCan = false;
+    }
 }
 

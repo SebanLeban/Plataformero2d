@@ -14,7 +14,6 @@ public class ControlJugador : MonoBehaviour
     public Animator anim;
 
     //Movement
-    public static bool hasGroundpounded = false;
     public float MinFuerzaSalto;
     public static float FuerzaDeSalto;
     public static float maxfuerzasalto = 10;
@@ -27,7 +26,7 @@ public class ControlJugador : MonoBehaviour
     //Powerups
     public GameObject jetpack;
     public int jetpackForce;
-
+    public TrailRenderer jetpacktr;
 
     void Start()
     {
@@ -39,9 +38,14 @@ public class ControlJugador : MonoBehaviour
 
     void Update()
     {
+        //Equipar y remover jetpack del player model
         if (AllowActions.equippedJetpack)
         {
             jetpack.SetActive(true);
+        }
+        else
+        {
+            jetpack.SetActive(false);
         }
         //Rotate Left
         if (Input.GetKey(KeyCode.Q))
@@ -81,38 +85,6 @@ public class ControlJugador : MonoBehaviour
             StartCoroutine(Bounce());
         }
 
-        //Jetpack
-        if (Input.GetKey(KeyCode.Space) && !AllowActions.grounded && AllowActions.equippedJetpack && AllowActions.jetpackFuel >= 0)
-        {
-            rb.AddForce(rb.transform.up * jetpackForce, ForceMode.Impulse);
-            AllowActions.jetpackFuel--;
-        }
-
-
-
-        //GroundPound
-
-        //float Rotation;
-        //if (GameObject.eulerAngles.y <= 180f)
-        //{
-        //    Rotation = GameObject.eulerAngles.y;
-        //}
-        //else
-        //{
-        //    Rotation = GameObject.eulerAngles.y - 360f;
-        //}
-
-        //Debug.Log(Rotation);
-
-        if (Input.GetKeyUp(KeyCode.LeftControl) && !AllowActions.grounded && hasGroundpounded == false)
-        {
-            //rb.transform.rotation = Quaternion.Euler(0, Rotation, 0);
-            Debug.Log("control pressed");
-            rb.velocity = new Vector3(0, 0, 0);
-            rb.AddForce(rb.transform.up * -10, ForceMode.Impulse);
-            hasGroundpounded = true;
-        }
-
 
         //Coroutines
 
@@ -138,24 +110,61 @@ public class ControlJugador : MonoBehaviour
     {
 
         //Mov Jugador
-        movimientoCostados = Input.GetAxis("Horizontal") * rapidezDesplazamiento * -1;
-        movimientoAdelanteAtras = Input.GetAxis("Vertical") * rapidezDesplazamiento;
 
-        rb.AddTorque(transform.forward * movimientoCostados, ForceMode.Impulse);
-        rb.AddTorque(transform.right * movimientoAdelanteAtras, ForceMode.Impulse);
-
-        movimientoAdelanteAtras *= Time.deltaTime;
-        movimientoCostados *= Time.deltaTime;
-
-        if (movimientoCostados == 0)
+        if (!AllowActions.hasGroundpounded) //Chequea que el user no este en groundpound state
         {
-            rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, rb.angularVelocity.z);
+            movimientoCostados = Input.GetAxis("Horizontal") * rapidezDesplazamiento * -1;
+            movimientoAdelanteAtras = Input.GetAxis("Vertical") * rapidezDesplazamiento;
+
+            rb.AddTorque(transform.forward * movimientoCostados, ForceMode.Impulse);
+            rb.AddTorque(transform.right * movimientoAdelanteAtras, ForceMode.Impulse);
+
+            movimientoAdelanteAtras *= Time.deltaTime;
+            movimientoCostados *= Time.deltaTime;
+
+            if (movimientoCostados == 0)
+            {
+                rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, rb.angularVelocity.z);
+            }
+            if (movimientoAdelanteAtras == 0)
+            {
+                rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, 0);
+            }
+
         }
-        if (movimientoAdelanteAtras == 0)
+        //Jetpack
+        if (Input.GetKey(KeyCode.Space) && !AllowActions.grounded && AllowActions.equippedJetpack && AllowActions.jetpackFuel >= 0)
         {
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, 0);
+
+            jetpacktr.time = 3f;
+            rb.AddForce(rb.transform.up * jetpackForce / 5, ForceMode.Impulse);
+            AllowActions.jetpackFuel--;
+        }
+        jetpacktr.time -= 0.1f;
+
+        //GroundPound
+
+        float Rotation;
+        if (GameObject.eulerAngles.y <= 180f)
+        {
+            Rotation = GameObject.eulerAngles.y;
+        }
+        else
+        {
+            Rotation = GameObject.eulerAngles.y - 360f;
+        }
+
+
+        if (Input.GetKey(KeyCode.LeftControl) && !AllowActions.grounded && !AllowActions.hasGroundpounded && AllowActions.equippedCan)
+        {
+            rb.transform.rotation = Quaternion.Euler(0, Rotation, 0);
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.AddForce(rb.transform.up * -10, ForceMode.Impulse);
+            AllowActions.hasGroundpounded = true;
         }
     }
+
+
 }
 
 
