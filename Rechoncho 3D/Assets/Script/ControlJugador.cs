@@ -163,8 +163,42 @@ public class ControlJugador : MonoBehaviour
             AllowActions.hasGroundpounded = true;
         }
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("InvertirControles"))
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+                rb.AddTorque(rb.transform.up * 2, ForceMode.Impulse);
+            }
 
+            //Rotate Right
+            if (Input.GetKey(KeyCode.Q))
+            {
+                rb.AddTorque(rb.transform.up * -2, ForceMode.Impulse);
+            }
+        }
 
+        if (collision.gameObject.CompareTag("NormalizarControles"))
+        {
+            if (Input.GetKey(KeyCode.Q))
+            {
+                rb.AddTorque(rb.transform.up * 2, ForceMode.Impulse);
+            }
+
+            //Rotate Right
+            if (Input.GetKey(KeyCode.E))
+            {
+                rb.AddTorque(rb.transform.up * -2, ForceMode.Impulse);
+            }
+        }
+
+        if (collision.gameObject.CompareTag("TP"))
+        {
+            rb.GetComponent<Rigidbody>().position = new Vector3(42f, 0f, -3f);
+        }
+
+    }
 }
 
 

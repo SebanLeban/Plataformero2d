@@ -10,6 +10,11 @@ TagManager:
   - Breakable
   - Bomb
   - Can
+  - InvertirControles
+  - NormalizarControles
+  - Lava
+  - TP
+  - Trap
   layers:
   - Default
   - TransparentFX
