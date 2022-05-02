@@ -18,6 +18,12 @@ public class AllowActions : MonoBehaviour
     public static bool hasGroundpounded = false;
     public static bool equippedCan = false;
 
+    public static bool equippedInverse = false;
+
+    public static bool equippedTP = false;
+
+    public static bool equippedDash = false;
+
     private void FixedUpdate()
     {
         if (hasGroundpounded && grounded)
@@ -47,6 +53,7 @@ public class AllowActions : MonoBehaviour
             {
                 anim.SetBool("grounded", true);
                 grounded = true;
+                dashPlayer.isDashing = false;
                 cancellingGrounded = false;
                 CancelInvoke(nameof(StopGrounded));
                 jetpackFuel = 100;
@@ -91,6 +98,33 @@ public class AllowActions : MonoBehaviour
             equippedCan = true;
             Destroy(other.gameObject);
         }
+
+        if (other.gameObject.CompareTag("InvertirControles"))
+        {
+            UnequipAll();
+            equippedInverse = true;
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.CompareTag("NormalizarControles"))
+        {
+            UnequipAll();
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.CompareTag("TP"))
+        {
+            UnequipAll();
+            equippedTP = true;
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.CompareTag("Dash"))
+        {
+            UnequipAll();
+            equippedDash = true;
+            Destroy(other.gameObject);
+        }
     }
 
 
@@ -98,6 +132,10 @@ public class AllowActions : MonoBehaviour
     {
         equippedJetpack = false;
         equippedCan = false;
+        equippedInverse = false;
+        equippedTP = false;
+        equippedDash = false;
+
     }
 }
 

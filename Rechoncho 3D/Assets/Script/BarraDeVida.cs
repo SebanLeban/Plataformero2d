@@ -7,41 +7,51 @@ public class BarraDeVida : MonoBehaviour
 {
 
     public Image barraDeVida;
-
-    public float vidaActual;
-
+    private float vidaActual;
     public float vidaMaxima;
+
+    private bool dpsOn;
 
     void Start()
     {
-        
+        vidaActual = vidaMaxima;
     }
 
-    void Update()
+    private void Update()
     {
-        barraDeVida.fillAmount = vidaActual / vidaMaxima;
+        CheckAlive();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Lava"))
         {
-            recibirdaño();
+            StartCoroutine(ReduceHp());
         }
         if (collision.gameObject.CompareTag("Trap"))
         {
-            recibirdaño();
+            StartCoroutine(ReduceHp());
         }
     }
 
-    public void recibirdaño()
+    public void CheckAlive()
     {
-        vidaActual = vidaActual - 100;
+        barraDeVida.fillAmount = vidaActual / vidaMaxima;
 
         if (vidaActual == 0)
         {
             //reiniciar
             Destroy(this.gameObject);
         }
+    }
+
+    IEnumerator ReduceHp()
+    {
+        if (dpsOn) {
+            vidaActual = vidaActual - 1;
+            dpsOn = false;
+        }
+        yield return new WaitForSeconds(0.5f);
+        dpsOn = true;
     }
 }

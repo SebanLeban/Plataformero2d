@@ -6,7 +6,7 @@ public class dashPlayer : MonoBehaviour
 {
 
     public float dashSpeed;
-    bool isDashing;
+    public static bool isDashing;
     Rigidbody rb;
 
     public GameObject dashEffect;
@@ -16,31 +16,22 @@ public class dashPlayer : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            isDashing = true;
-        }
-    }
-
     private void FixedUpdate()
     {
-        if (isDashing)
+        if (Input.GetKey(KeyCode.LeftControl) && AllowActions.equippedDash && !isDashing)
         {
+            isDashing = true;
             Dashing();
         }
     }
 
     private void Dashing()
     {
-        rb.AddForce(transform.forward * dashSpeed, ForceMode.Impulse);
-        isDashing = false;
+        rb.AddForce(transform.forward * dashSpeed * -1, ForceMode.Impulse);
 
-        GameObject effect = Instantiate(dashEffect, Camera.main.transform.position, dashEffect.transform.rotation);
-        effect.transform.parent = Camera.main.transform;
-        effect.transform.LookAt(transform);
+        //GameObject effect = Instantiate(dashEffect, Camera.main.transform.position, dashEffect.transform.rotation);
+        //effect.transform.parent = Camera.main.transform;
+        //effect.transform.LookAt(transform);
     }
 }
 

@@ -116,6 +116,13 @@ public class ControlJugador : MonoBehaviour
             movimientoCostados = Input.GetAxis("Horizontal") * rapidezDesplazamiento * -1;
             movimientoAdelanteAtras = Input.GetAxis("Vertical") * rapidezDesplazamiento;
 
+            //Invertir controles
+            if (AllowActions.equippedInverse) 
+            {
+                movimientoAdelanteAtras = movimientoAdelanteAtras * -1;
+                movimientoCostados = movimientoCostados * -1;
+            }
+
             rb.AddTorque(transform.forward * movimientoCostados, ForceMode.Impulse);
             rb.AddTorque(transform.right * movimientoAdelanteAtras, ForceMode.Impulse);
 
